@@ -18,6 +18,7 @@ queue_t *q_new()
         return NULL;
     }
     q->head = NULL;
+    q->tail = NULL;
     return q;
 }
 
@@ -111,10 +112,9 @@ bool q_insert_tail(queue_t *q, char *s)
     *(newt->value + strlen(s) + 1) = '\0';
     newt->next = NULL;
 
-    q->tail->next = newt;
     q->tail = newt;
     q->size++;
-    return false;
+    return true;
 }
 
 /*
