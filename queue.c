@@ -188,6 +188,7 @@ void q_reverse(queue_t *q)
         prev = curr;
         curr = next;
     }
+    q->head = prev;
     return;
 }
 
