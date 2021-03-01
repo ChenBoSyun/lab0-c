@@ -133,10 +133,11 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
         return false;
     }
     char *str = q->head->value;
+
     if (sp != NULL) {
         if (strlen(str) > bufsize - 1) {
             memcpy(sp, str, bufsize - 1);
-            *(sp + bufsize) = '\0';
+            *(sp + bufsize - 1) = '\0';
         } else {
             memcpy(sp, str, strlen(str));
             *(sp + strlen(str)) = '\0';
@@ -189,6 +190,45 @@ void q_reverse(queue_t *q)
     return;
 }
 
+
+list_ele_t *merge(list_ele_t *left, list_ele_t *right)
+{
+    if (left == NULL) {
+        return right;
+    }
+    if (right == NULL) {
+        return left;
+    }
+    if (*(left->value) < *(right->value)) {
+        left->next = merge(left->next, right);
+        return left;
+    } else {
+        right->next = merge(left, right->next);
+        return right;
+    }
+}
+
+list_ele_t *merge_list(list_ele_t *head)
+{
+    if (head == NULL || head->next == NULL) {
+        return head;
+    }
+    list_ele_t *fast = head->next;
+    list_ele_t *slow = head;
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    fast = slow->next;
+    slow->next = NULL;
+
+    list_ele_t *left = merge_list(head);
+    list_ele_t *right = merge_list(fast);
+
+    return merge(left, right);
+}
+
 /*
  * Sort elements of queue in ascending order
  * No effect if q is NULL or empty. In addition, if q has only one
@@ -196,6 +236,18 @@ void q_reverse(queue_t *q)
  */
 void q_sort(queue_t *q)
 {
+    if (q == NULL || q->head == NULL) {
+        return;
+    }
+
+    q->head = merge_list(q->head);
+    list_ele_t *curr = q->head;
+    while (curr && curr->next) {
+        curr = curr->next;
+    }
+    q->tail = curr;
+    return;
+
     /* TODO: You need to write the code for this function */
     /* TODO: Remove the above comment when you are about to implement. */
 }
