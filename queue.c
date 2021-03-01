@@ -199,7 +199,7 @@ list_ele_t *merge(list_ele_t *left, list_ele_t *right)
     if (right == NULL) {
         return left;
     }
-    if (*(left->value) < *(right->value)) {
+    if (strcmp(left->value, right->value) < 0) {
         left->next = merge(left->next, right);
         return left;
     } else {
