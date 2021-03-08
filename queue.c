@@ -186,19 +186,28 @@ void q_reverse(queue_t *q)
 
 list_ele_t *merge(list_ele_t *left, list_ele_t *right)
 {
+    list_ele_t dummy;
+    dummy.next = NULL;
+
+    list_ele_t *curr = &dummy;
+    while (left != NULL && right != NULL) {
+        if (strcmp(left->value, right->value) < 0) {
+            curr->next = left;
+            curr = curr->next;
+            left = left->next;
+        } else {
+            curr->next = right;
+            curr = curr->next;
+            right = right->next;
+        }
+    }
     if (left == NULL) {
-        return right;
+        curr->next = right;
     }
     if (right == NULL) {
-        return left;
+        curr->next = left;
     }
-    if (strcmp(left->value, right->value) < 0) {
-        left->next = merge(left->next, right);
-        return left;
-    } else {
-        right->next = merge(left, right->next);
-        return right;
-    }
+    return dummy.next;
 }
 
 list_ele_t *merge_list(list_ele_t *head)
